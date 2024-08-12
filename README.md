@@ -19,3 +19,4 @@
 >iconfonts内容是一些图标
 >
 >atuo_push.sh文件是自动化上传用的
+>俩py文件不用管
