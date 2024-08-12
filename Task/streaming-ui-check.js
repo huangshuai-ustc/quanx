@@ -1,4 +1,4 @@
-<html><body><p>/***
+/***
 
 Thanks to &amp; modified from 
 1. https://gist.githubusercontent.com/Hyseen/b06e911a41036ebc36acf04ddebe7b9a/raw/nf_check.js
@@ -101,7 +101,7 @@ const message = {
 
   let content = "------------------------------"+""+([result["YouTube"],result["Netflix"],result["Disney"],result["Dazn"],result["Paramount"],result["Discovery"],result["ChatGPT"]]).join("")
   content = content + "------------------------------"+"<font color="#CD5C5C">"+"<b>节点</b> ➟ " + $environment.params+ "</font>"
-  content =`</p><p style="text-align: center; font-family: -apple-system; font-size: large; font-weight: thin">` + content + `</p>`
+  content =`<p style="text-align: center; font-family: -apple-system; font-size: large; font-weight: thin">` + content + `</p>`
 //  cnt = `<p style="text-align: center; font-family: -apple-system; font-size: large; font-weight: thin">` +'----------------------'+result["Disney"]+'----------------------'+$environment.params + `</p>`
 $configuration.sendMessage(message).then(resolve =&gt; {
     if (resolve.error) {
@@ -612,4 +612,4 @@ function testChatGPT() {
     }, reason =&gt; {
       console.log("ChatGPT-Error"+reason)
       resolve("ChatGPT failed")
-    })})}</body></html>
+    })})}

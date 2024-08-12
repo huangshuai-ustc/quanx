@@ -1,4 +1,4 @@
-<html><body><p>const url = "https://api.exchangerate-api.com/v4/latest/CNY";
+const url = "https://api.exchangerate-api.com/v4/latest/CNY";
 const isQuantumultX = typeof $task !== "undefined";
 const isSurge = typeof $httpClient !== "undefined";
 const isLoon = typeof $loon !== "undefined";
@@ -61,4 +61,4 @@ function showNotification(data) {
   $done();
 }
 
-getExchangeRate();</p></body></html>
+getExchangeRate();

@@ -1,4 +1,4 @@
-<html><body><p>const url = "https://movie.douban.com/cinema/nowplaying/suzhou/";
+const url = "https://movie.douban.com/cinema/nowplaying/suzhou/";
 const isQuantumultX = typeof $task !== "undefined";
 const isSurge = typeof $httpClient !== "undefined";
 const isLoon = typeof $loon !== "undefined";
@@ -64,4 +64,4 @@ function extractMovieData(html) {
   return { titles: titles, scores: scores, actors: actors };
 }
 
-getMovieData();</p></body></html>
+getMovieData();

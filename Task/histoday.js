@@ -1,4 +1,4 @@
-<html><body><p>const url = "https://lishishangdejintian.bmcx.com/";
+const url = "https://lishishangdejintian.bmcx.com/";
 if (typeof $task !== "undefined") {
   $task.fetch({ url: url }).then(
     (response) =&gt; {
@@ -42,4 +42,4 @@ function handleResponse(data) {
   }
 
   $done();
-}</a></p></body></html>
+}</a>

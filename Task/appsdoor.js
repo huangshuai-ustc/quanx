@@ -1,4 +1,4 @@
-<html><body><p>const url = "https://gofans.cn/limited/ios";
+const url = "https://gofans.cn/limited/ios";
 
 const headers = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"
@@ -63,7 +63,7 @@ function handleResponse(body, requestHeaders) {
 }
 
 function parseAppList(html) {
-  const regex = /</p><div>]+class="column[^"]*"[^&gt;]*&gt;[\s\S]*?<strong>]+class="title[^"]*"[^&gt;]*&gt;(.*?)&lt;\/strong&gt;[\s\S]*?<b>]*&gt;(.*?)&lt;\/b&gt;[\s\S]*?<div>]+class="price-original[^"]*"[^&gt;]*&gt;[^&lt;]*<del>]*&gt;(.*?)&lt;\/del&gt;[\s\S]*?<p>]+class="intro[^"]*"[^&gt;]*&gt;([\s\S]*?)&lt;\/p&gt;/g;
+  const regex = /<div[^>]+class="column[^"]*"[^&gt;]*&gt;[\s\S]*?<strong[^>]+class="title[^"]*"[^&gt;]*&gt;(.*?)&lt;\/strong&gt;[\s\S]*?<b[^>]*&gt;(.*?)&lt;\/b&gt;[\s\S]*?<div[^>]+class="price-original[^"]*"[^&gt;]*&gt;[^&lt;]*<del[^>]*&gt;(.*?)&lt;\/del&gt;[\s\S]*?<p[^>]+class="intro[^"]*"[^&gt;]*&gt;([\s\S]*?)&lt;\/p&gt;/g;
   const appList = [];
   let match;
   while ((match = regex.exec(html)) !== null) {
@@ -87,4 +87,4 @@ function truncateDescription(description, maxLength) {
   }
   return description;
 }
-</p></del></div></b></strong></div></body></html>
+</p[^></del[^></div[^></b[^></strong[^></div[^>

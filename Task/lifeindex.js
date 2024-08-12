@@ -1,4 +1,4 @@
-<html><body><p>const apiUrls  = [
+const apiUrls  = [
   "https://v1.yiketianqi.com/life/lifepro?appid=64354575&amp;appsecret=aNcXCN9V",
   "https://v1.yiketianqi.com/life/lifepro?appid=66971574&amp;appsecret=GKSy6y7o",
   "https://v1.yiketianqi.com/life/lifepro?appid=45629633&amp;appsecret=5tR1Gk1T",
@@ -99,4 +99,4 @@ function handleResponse(data) {
   $done();
  }
 }
-testNextUrl();</p></body></html>
+testNextUrl();

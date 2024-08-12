@@ -1,4 +1,4 @@
-<html><body><p>{
+{
     "name":"UI 脚本合集",
     "description":"UI-Interaction Script Gallery by Shawn",
     "task":[
@@ -15,4 +15,4 @@
         "event-network network-direct.js, tag=Direct 策略切换, img-url=switch.2.system",
         "event-interaction https://raw.githubusercontent.com/KOP-XIAO/QuantumultX/master/Scripts/server-info-plus.js, tag=节点信息Plus, img-url=info.bubble.system.system"
     ]
-}</p></body></html>
+}
