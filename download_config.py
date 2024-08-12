@@ -24,35 +24,38 @@ filter_urls = [
     'https://whatshub.top/rule/WeChat.list',
     'https://whatshub.top/rewrite/ZhihuBlock.conf',
     'https://whatshub.top/rewrite/biliad.conf',
-    'https://whatshub.top/rewrite/doc.conf']
+    'https://whatshub.top/rewrite/doc.conf',
+    'https://raw.githubusercontent.com/ConnersHua/RuleGo/master/Surge/Ruleset/Proxy.list',
+    'https://raw.githubusercontent.com/ddgksf2013/Filter/master/GoogleVoice.list']
 
-rewrite_urls = ['https://whatshub.top/rewrite/znz.conf',
-                'https://whatshub.top/rewrite/nfc.conf',
-                'https://whatshub.top/rewrite/adultraplus.conf',
-                'https://raw.githubusercontent.com/thebestkyle323/Quantumult-x/main/WPSuperVIPuserCrack.js',
-                'https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/Bilibili.conf',
-                'https://github.com/ddgksf2013/Rewrite/raw/master/UnlockVip/Spotify.conf',
-                'https://github.com/ddgksf2013/dev/raw/master/ForOwnUse.conf',
-                'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/StartUp.conf',
-                'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/script/zheye/zheye.snippet',
-                'https://github.com/app2smile/rules/raw/master/module/tieba-qx.conf',
-                'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Applet.conf',
-                'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/YoutubeAds.conf',
-                'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Weibo.conf',
-                'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Ximalaya.conf',
-                'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Amap.conf',
-                'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Netease.conf',
-                'https://gist.githubusercontent.com/ddgksf2013/beec132ca0c3570ffa0cf331bce8f82a/raw/baidumap.adblock.conf',
-                'https://github.com/ddgksf2013/Rewrite/raw/master/Html/WebAdBlock.conf',
-                'https://github.com/ddgksf2013/Rewrite/raw/master/Html/Q-Search.conf',
-                'https://github.com/ddgksf2013/Rewrite/raw/master/Html/Douban.conf',
-                'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/XiaoHongShu.conf',
-                'https://gist.githubusercontent.com/ddgksf2013/f43026707830c7818ee3ba624e383c8d/raw/baiduCloud.vip.js',
-                'https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/Function/UnblockURLinWeChat.conf',
-                'https://raw.githubusercontent.com/DivineEngine/Profiles/master/Quantumult/Rewrite/General.conf',
-                'https://raw.githubusercontent.com/Orz-3/QuantumultX/master/Netflix_ratings.conf',
-                'https://raw.githubusercontent.com/id77/QuantumultX/master/rewrite/Youtube_CC.conf',
-                'https://raw.githubusercontent.com/chavyleung/scripts/master/box/rewrite/boxjs.rewrite.quanx.conf']
+rewrite_urls = [
+    'https://whatshub.top/rewrite/znz.conf',
+    'https://whatshub.top/rewrite/nfc.conf',
+    'https://whatshub.top/rewrite/adultraplus.conf',
+    'https://raw.githubusercontent.com/thebestkyle323/Quantumult-x/main/WPSuperVIPuserCrack.js',
+    'https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/Bilibili.conf',
+    'https://github.com/ddgksf2013/Rewrite/raw/master/UnlockVip/Spotify.conf',
+    'https://github.com/ddgksf2013/dev/raw/master/ForOwnUse.conf',
+    'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/StartUp.conf',
+    'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/script/zheye/zheye.snippet',
+    'https://github.com/app2smile/rules/raw/master/module/tieba-qx.conf',
+    'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Applet.conf',
+    'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/YoutubeAds.conf',
+    'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Weibo.conf',
+    'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Ximalaya.conf',
+    'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Amap.conf',
+    'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Netease.conf',
+    'https://gist.githubusercontent.com/ddgksf2013/beec132ca0c3570ffa0cf331bce8f82a/raw/baidumap.adblock.conf',
+    'https://github.com/ddgksf2013/Rewrite/raw/master/Html/WebAdBlock.conf',
+    'https://github.com/ddgksf2013/Rewrite/raw/master/Html/Q-Search.conf',
+    'https://github.com/ddgksf2013/Rewrite/raw/master/Html/Douban.conf',
+    'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/XiaoHongShu.conf',
+    'https://gist.githubusercontent.com/ddgksf2013/f43026707830c7818ee3ba624e383c8d/raw/baiduCloud.vip.js',
+    'https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/Function/UnblockURLinWeChat.conf',
+    'https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/Html/General.conf',
+    'https://raw.githubusercontent.com/Orz-3/QuantumultX/master/Netflix_ratings.conf',
+    'https://raw.githubusercontent.com/id77/QuantumultX/master/rewrite/Youtube_CC.conf',
+    'https://raw.githubusercontent.com/chavyleung/scripts/master/box/rewrite/boxjs.rewrite.quanx.conf']
 
 config_urls = ['https://github.com/ddgksf2013/Profile/raw/master/QuantumultX.conf']
 
@@ -75,19 +78,17 @@ def main(urls: List[str], dir_name: str) -> None:
         r = requests.get(url)
         if r.status_code == 200:
             time.sleep(1)
-            soup = BeautifulSoup(r.text, 'lxml')
             with open(f'D:/ProgramData/Codes/GitHub/quanx/{dir_name}/' + url.split('/')[-1], 'w',
                       encoding='utf-8') as file:
-                file.write(str(soup))
+                file.write(r.text)
 
 
 if __name__ == '__main__':
     main(filter_urls, 'Filter')
-    # main(rewrite_urls, 'Rewrite')
-    # main(config_urls, 'Config')
-    # main(task_urls, 'Task')
-    # main(http_urls, 'Http')
-    # main(parser_urls, 'Parser')
+    main(rewrite_urls, 'Rewrite')
+    main(config_urls, 'Config')
+    main(task_urls, 'Task')
+    main(http_urls, 'Http')
+    main(parser_urls, 'Parser')
     print('All Done!')
 
-    time.sleep(3)
