@@ -1,11 +1,11 @@
 const url = "https://lishishangdejintian.bmcx.com/";
 if (typeof $task !== "undefined") {
   $task.fetch({ url: url }).then(
-    (response) =&gt; {
-      const data = response.body.replace(/ /g, ' ');
+    (response) => {
+      const data = response.body.replace(/&nbsp;/g, ' ');
       handleResponse(data);
     },
-    (reason) =&gt; {
+    (reason) => {
       console.log(reason.error);
       $done();
     }
@@ -16,17 +16,17 @@ if (typeof $task !== "undefined") {
       console.log(error);
       $done();
     } else {
-      const sanitizedData = data.replace(/ /g, ' ');
+      const sanitizedData = data.replace(/&nbsp;/g, ' ');
       handleResponse(sanitizedData);
     }
   });
 }
 
 function handleResponse(data) {
-  const regex = /(\d{4}年)(\d{1,2}月\d{1,2}日) <a href="\/\d+__lishishangdejintianchaxun\/" target="_blank">(.*?)&lt;\/a&gt;/g;
+  const regex = /(\d{4}年)(\d{1,2}月\d{1,2}日) <a href='\/\d+__lishishangdejintianchaxun\/' target='_blank'>(.*?)<\/a>/g;
   const matches = [...data.matchAll(regex)];
 
-  if (matches.length &gt; 0) {
+  if (matches.length > 0) {
     const today = new Date().getFullYear();
     const events = [];
 
@@ -42,4 +42,4 @@ function handleResponse(data) {
   }
 
   $done();
-}</a>
+}

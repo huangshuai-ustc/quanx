@@ -1,15 +1,15 @@
 # Unbreak
 # 由于广告屏蔽无法做到100%完美，故由墨鱼维护本分流，用以修正误屏蔽的域名
-# &gt; dedao
+# > dedao
 DOMAIN-SUFFIX,umiwi.com
-# &gt; general
+# > general
 DOMAIN,app.adjust.com
 DOMAIN,app.appsflyer.com
 DOMAIN,bdtj.tagtic.cn
-# &gt; alibaba
+# > alibaba
 DOMAIN,log.mmstat.com
 DOMAIN,sycm.mmstat.com
-# &gt; google
+# > google
 DOMAIN-SUFFIX,blog.google
 DOMAIN-SUFFIX,googletraveladservices.com
 DOMAIN,clientservices.googleapis.com
@@ -17,7 +17,7 @@ DOMAIN,update.googleapis.com
 DOMAIN,dl.google.com
 DOMAIN,dl.l.google.com
 DOMAIN,update.googleapis.com
-# &gt;&gt; Firebase Cloud Messaging
+# >> Firebase Cloud Messaging
 DOMAIN,mtalk.google.com
 DOMAIN,alt1-mtalk.google.com
 DOMAIN,alt2-mtalk.google.com
@@ -27,15 +27,15 @@ DOMAIN,alt5-mtalk.google.com
 DOMAIN,alt6-mtalk.google.com
 DOMAIN,alt7-mtalk.google.com
 DOMAIN,alt8-mtalk.google.com
-# &gt; paramount+
+# > paramount+
 # DOMAIN,pubads.g.doubleclick.net
-# &gt; tencent
+# > tencent
 DOMAIN,fairplay.l.qq.com
 DOMAIN,livew.l.qq.com
 DOMAIN,vd.l.qq.com
 DOMAIN,vi.l.qq.com
-# &gt; Strava
+# > Strava
 DOMAIN,analytics.strava.com
-# &gt; umeng
+# > umeng
 DOMAIN,msg.umeng.com
 DOMAIN,msg.umengcloud.com

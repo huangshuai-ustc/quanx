@@ -6,10 +6,10 @@ const isLoon = typeof $loon !== "undefined";
 function getExchangeRate() {
   if (isQuantumultX) {
     $task.fetch({ url: url }).then(
-      (response) =&gt; {
+      (response) => {
         showNotification(response.body);
       },
-      (reason) =&gt; {
+      (reason) => {
         console.log(reason.error);
         $done();
       }

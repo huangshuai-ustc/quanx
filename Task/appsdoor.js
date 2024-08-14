@@ -6,13 +6,13 @@ const headers = {
 
 if (typeof $task !== 'undefined') {
 
-  $task.fetch({ url: url, headers: headers }).then(response =&gt; {
+  $task.fetch({ url: url, headers: headers }).then(response => {
     handleResponse(response.body);
-  }, reason =&gt; {
+  }, reason => {
     console.log('获取应用信息失败:', reason.error);
     $done();
   });
-} else if (typeof $httpClient !== 'undefined' &amp;&amp; typeof $notification !== 'undefined') {
+} else if (typeof $httpClient !== 'undefined' && typeof $notification !== 'undefined') {
 
   $httpClient.get({ url: url, headers: headers }, function (error, response, body) {
     if (error) {
@@ -22,7 +22,7 @@ if (typeof $task !== 'undefined') {
     }
     handleResponse(body);
   });
-} else if (typeof $request !== 'undefined' &amp;&amp; typeof $notify !== 'undefined') {
+} else if (typeof $request !== 'undefined' && typeof $notify !== 'undefined') {
 
   $httpClient.get({ url: url, headers: headers }, function (error, response, body) {
     if (error) {
@@ -39,11 +39,11 @@ if (typeof $task !== 'undefined') {
 
 function handleResponse(body, requestHeaders) {
   const appList = parseAppList(body);
-  const freeAppList = appList.filter(app =&gt; app.price === "Free");
+  const freeAppList = appList.filter(app => app.price === "Free");
 
   let notificationContent = '';
   const appCount = requestHeaders ? parseInt(requestHeaders['appCount']) || 8 : 8;
-  for (let i = 0; i &lt; freeAppList.length &amp;&amp; i &lt; appCount; i++) {
+  for (let i = 0; i < freeAppList.length && i < appCount; i++) {
     const app = freeAppList[i];
     const description = truncateDescription(app.description, 30);
     notificationContent += `🆓${app.name}｜原价￥${app.originalPrice}\n`;
@@ -63,14 +63,14 @@ function handleResponse(body, requestHeaders) {
 }
 
 function parseAppList(html) {
-  const regex = /<div[^>]+class="column[^"]*"[^&gt;]*&gt;[\s\S]*?<strong[^>]+class="title[^"]*"[^&gt;]*&gt;(.*?)&lt;\/strong&gt;[\s\S]*?<b[^>]*&gt;(.*?)&lt;\/b&gt;[\s\S]*?<div[^>]+class="price-original[^"]*"[^&gt;]*&gt;[^&lt;]*<del[^>]*&gt;(.*?)&lt;\/del&gt;[\s\S]*?<p[^>]+class="intro[^"]*"[^&gt;]*&gt;([\s\S]*?)&lt;\/p&gt;/g;
+  const regex = /<div[^>]+class="column[^"]*"[^>]*>[\s\S]*?<strong[^>]+class="title[^"]*"[^>]*>(.*?)<\/strong>[\s\S]*?<b[^>]*>(.*?)<\/b>[\s\S]*?<div[^>]+class="price-original[^"]*"[^>]*>[^<]*<del[^>]*>(.*?)<\/del>[\s\S]*?<p[^>]+class="intro[^"]*"[^>]*>([\s\S]*?)<\/p>/g;
   const appList = [];
   let match;
   while ((match = regex.exec(html)) !== null) {
     const name = match[1];
     const price = match[2];
     const originalPrice = parseFloat(match[3]).toFixed(1);
-    const description = match[4].replace(/&lt;.*?&gt;/g, '').replace(/\n+/g, ' ').trim();
+    const description = match[4].replace(/<.*?>/g, '').replace(/\n+/g, ' ').trim();
     appList.push({
       name: name,
       price: price,
@@ -82,9 +82,8 @@ function parseAppList(html) {
 }
 
 function truncateDescription(description, maxLength) {
-  if (description.length &gt; maxLength) {
+  if (description.length > maxLength) {
     return description.substring(0, maxLength) + '…';
   }
   return description;
 }
-</p[^></del[^></div[^></b[^></strong[^></div[^>

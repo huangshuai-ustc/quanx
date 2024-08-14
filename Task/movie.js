@@ -6,10 +6,10 @@ const isLoon = typeof $loon !== "undefined";
 function getMovieData() {
   if (isQuantumultX) {
     $task.fetch({ url: url }).then(
-      (response) =&gt; {
+      (response) => {
         showNotification(response.body);
       },
-      (reason) =&gt; {
+      (reason) => {
         console.log(reason.error);
         $done();
       }
@@ -32,22 +32,22 @@ function showNotification(data) {
   const movieScores = movieData.scores.slice(0, 6);
   const movieActors = movieData.actors.slice(0, 6);
   let notificationBody = "";
-  for (let i = 0; i &lt; movieTitles.length; i++) {
+  for (let i = 0; i < movieTitles.length; i++) {
     const score = movieScores[i] === "0" ? "æš‚æ— " : movieScores[i];
     const actors = movieActors[i] || "æš‚æ— ";
     notificationBody += "ðŸŽžï¸�" + movieTitles[i] + "-" + actors + "ðŸ�¿" + score + "\n";
   }
 
   if (isQuantumultX) {
-    $notify("çƒ­æ˜ ç”µå½±&amp;è¯„åˆ†", "", notificationBody);
+    $notify("çƒ­æ˜ ç”µå½±&è¯„åˆ†", "", notificationBody);
   } else if (isSurge || isLoon) {
-    $notification.post("çƒ­æ˜ ç”µå½±&amp;è¯„åˆ†", "", notificationBody);
+    $notification.post("çƒ­æ˜ ç”µå½±&è¯„åˆ†", "", notificationBody);
   }
   $done();
 }
 
 function extractMovieData(html) {
-  const pattern = /data-title="(.*?)"\s+data-score="(.*?)"[^&gt;]+data-actors="(.*?)"/g;
+  const pattern = /data-title="(.*?)"\s+data-score="(.*?)"[^>]+data-actors="(.*?)"/g;
   let matches;
   const titles = [];
   const scores = [];

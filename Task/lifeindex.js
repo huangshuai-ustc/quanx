@@ -1,9 +1,9 @@
 const apiUrls  = [
-  "https://v1.yiketianqi.com/life/lifepro?appid=64354575&amp;appsecret=aNcXCN9V",
-  "https://v1.yiketianqi.com/life/lifepro?appid=66971574&amp;appsecret=GKSy6y7o",
-  "https://v1.yiketianqi.com/life/lifepro?appid=45629633&amp;appsecret=5tR1Gk1T",
-  "https://v1.yiketianqi.com/life/lifepro?appid=21628833&amp;appsecret=tr5TQRJx",
-  "https://v1.yiketianqi.com/life/lifepro?appid=64189857&amp;appsecret=chg9Xrhf"
+  "https://v1.yiketianqi.com/life/lifepro?appid=64354575&appsecret=aNcXCN9V",
+  "https://v1.yiketianqi.com/life/lifepro?appid=66971574&appsecret=GKSy6y7o",
+  "https://v1.yiketianqi.com/life/lifepro?appid=45629633&appsecret=5tR1Gk1T",
+  "https://v1.yiketianqi.com/life/lifepro?appid=21628833&appsecret=tr5TQRJx",
+  "https://v1.yiketianqi.com/life/lifepro?appid=64189857&appsecret=chg9Xrhf"
 ];
 
 let currentIndex = 0;
@@ -13,7 +13,7 @@ const isSurge = typeof $httpClient !== "undefined";
 const isLoon = typeof $loon !== "undefined";
 
 function testNextUrl() {
-  if (currentIndex &gt;= apiUrls.length) {
+  if (currentIndex >= apiUrls.length) {
     console.log("All URLs failed");
     $done();
     return;
@@ -23,11 +23,11 @@ function testNextUrl() {
 
   if (isQuantumultX) {
     $task.fetch({ url: apiUrl }).then(
-      (response) =&gt; {
+      (response) => {
         const responseData = response.body;
         handleResponse(responseData);
       },
-      (reason) =&gt; {
+      (reason) => {
         console.log(`Error for URL ${currentIndex + 1}: ${reason.error}`);
         currentIndex++;
         testNextUrl();

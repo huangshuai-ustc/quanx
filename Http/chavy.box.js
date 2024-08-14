@@ -3,7 +3,7 @@ const $ = new Env('BoxJs')
 // 为 eval 准备的上下文环境
 const $eval_env = {}
 
-$.version = '0.19.10'
+$.version = '0.19.11'
 $.versionType = 'beta'
 
 // 发出的请求需要需要 Surge、QuanX 的 rewrite
@@ -50,17 +50,17 @@ $.web = `https://cdn.jsdelivr.net/gh/chavyleung/scripts@${
 // 版本说明地址 (Release Note)
 $.ver = `https://raw.githubusercontent.com/chavyleung/scripts/master/box/release/box.release.json`
 
-!(async () =&gt; {
+!(async () => {
   // 勿扰模式
   $.isMute = [true, 'true'].includes($.getdata('@chavy_boxjs_userCfgs.isMute'))
 
   // 请求路径
   $.path = getPath($request.url)
 
-  // 请求参数 /api/save?id=xx&amp;name=xx =&gt; {id: 'xx', name: 'xx'}
+  // 请求参数 /api/save?id=xx&name=xx => {id: 'xx', name: 'xx'}
   const [, query] = $.path.split('?')
   $.queries = query
-    ? query.split('&amp;').reduce((obj, cur) =&gt; {
+    ? query.split('&').reduce((obj, cur) => {
         const [key, val] = cur.split('=')
         obj[key] = val
         return obj
@@ -77,11 +77,11 @@ $.ver = `https://raw.githubusercontent.com/chavyleung/scripts/master/box/release
   // 请求类型: page、api、query
   $.type = 'page'
   // 查询请求: /query/xxx
-  $.isQuery = $.isGet &amp;&amp; /^\/query\/.*?/.test($.path)
+  $.isQuery = $.isGet && /^\/query\/.*?/.test($.path)
   // 接口请求: /api/xxx
-  $.isApi = $.isPost &amp;&amp; /^\/api\/.*?/.test($.path)
+  $.isApi = $.isPost && /^\/api\/.*?/.test($.path)
   // 页面请求: /xxx
-  $.isPage = $.isGet &amp;&amp; !$.isQuery &amp;&amp; !$.isApi
+  $.isPage = $.isGet && !$.isQuery && !$.isApi
 
   // 升级用户数据
   upgradeUserData()
@@ -109,20 +109,20 @@ $.ver = `https://raw.githubusercontent.com/chavyleung/scripts/master/box/release
     await handleApi()
   }
 })()
-  .catch((e) =&gt; $.logErr(e))
-  .finally(() =&gt; doneBox())
+  .catch((e) => $.logErr(e))
+  .finally(() => doneBox())
 
 /**
- * http://boxjs.com/ =&gt; `http://boxjs.com`
- * http://boxjs.com/app/jd =&gt; `http://boxjs.com`
+ * http://boxjs.com/ => `http://boxjs.com`
+ * http://boxjs.com/app/jd => `http://boxjs.com`
  */
 function getHost(url) {
   return url.slice(0, url.indexOf('/', 8))
 }
 
 /**
- * http://boxjs.com/ =&gt; ``
- * http://boxjs.com/api/getdata =&gt; `/api/getdata`
+ * http://boxjs.com/ => ``
+ * http://boxjs.com/api/getdata => `/api/getdata`
  */
 function getPath(url) {
   // 如果以`/`结尾, 去掉最后一个`/`
@@ -154,29 +154,29 @@ async function handlePage() {
   const cache = $.getjson($.KEY_web_cache, null)
 
   // 如果没有开启调试模式，且当前版本与缓存版本一致，且直接取缓存
-  if (!isDebugWeb &amp;&amp; cache &amp;&amp; cache.version === $.version) {
+  if (!isDebugWeb && cache && cache.version === $.version) {
     $.html = cache.cache
   }
   // 如果开启了调试模式，并指定了 `debugger_web` 则从指定的地址获取页面
   else {
-    if (isDebugWeb &amp;&amp; debugger_web) {
+    if (isDebugWeb && debugger_web) {
       // 调试地址后面拼时间缀, 避免 GET 缓存
       const isQueryUrl = debugger_web.includes('?')
       $.web = `${debugger_web}${
-        isQueryUrl ? '&amp;' : '?'
+        isQueryUrl ? '&' : '?'
       }_=${new Date().getTime()}`
       boxdata.syscfgs.isDebugMode = true
       console.log(`[WARN] 调试模式: $.web = : ${$.web}`)
     }
     // 如果调用这个方法来获取缓存, 且标记为`非调试模式`
-    const getcache = () =&gt; {
+    const getcache = () => {
       console.log(`[ERROR] 调试模式: 正在使用缓存的页面!`)
       boxdata.syscfgs.isDebugMode = false
       return $.getjson($.KEY_web_cache).cache
     }
     await $.http.get($.web).then(
-      (resp) =&gt; {
-        if (/<title>BoxJs&lt;\/title&gt;/.test(resp.body)) {
+      (resp) => {
+        if (/<title>BoxJs<\/title>/.test(resp.body)) {
           // 返回页面源码, 并马上存储到持久化仓库
           $.html = resp.body
           const cache = { version: $.version, cache: $.html }
@@ -187,7 +187,7 @@ async function handlePage() {
         }
       },
       // 如果获取页面源码失败, 则从持久化仓库中获取
-      () =&gt; ($.html = getcache())
+      () => ($.html = getcache())
     )
   }
   // 根据偏好设置, 替换首屏颜色 (如果是`auto`则交由页面自适应)
@@ -210,7 +210,7 @@ async function handlePage() {
 
   // 调试模式支持 vue Devtools (只有在同时开启调试模式和指定了调试地址才生效)
   // vue.min.js 生效时, 会导致 @click="window.open()" 报 "window" is not defined 错误
-  if (isDebugWeb &amp;&amp; debugger_web) {
+  if (isDebugWeb && debugger_web) {
     $.html = $.html.replace('vue.min.js', 'vue.js')
   }
 }
@@ -277,30 +277,27 @@ async function handleQuery() {
 async function handleApi() {
   const [, api] = $.path.split('/api')
 
-  if (api === '/save' || api.startsWith('/save?')) {
-    await apiSave()
-  } else if (api === '/addAppSub') {
-    await apiAddAppSub()
-  } else if (api === '/reloadAppSub') {
-    await apiReloadAppSub()
-  } else if (api === '/delGlobalBak') {
-    await apiDelGlobalBak()
-  } else if (api === '/updateGlobalBak') {
-    await apiUpdateGlobalBak()
-  } else if (api === '/saveGlobalBak') {
-    await apiSaveGlobalBak()
-  } else if (api === '/impGlobalBak') {
-    await apiImpGlobalBak()
-  } else if (api === '/revertGlobalBak') {
-    await apiRevertGlobalBak()
-  } else if (api === '/runScript') {
-    await apiRunScript()
-  } else if (api === '/saveData') {
-    await apiSaveData()
-  } else if (api === '/surge') {
-    await apiSurge()
-  } else if (api === '/update') {
-    await apiUpdate()
+  const apiHandlers = {
+    '/save': apiSave,
+    '/addAppSub': apiAddAppSub,
+    '/deleteAppSub': apiDeleteAppSub,
+    '/reloadAppSub': apiReloadAppSub,
+    '/delGlobalBak': apiDelGlobalBak,
+    '/updateGlobalBak': apiUpdateGlobalBak,
+    '/saveGlobalBak': apiSaveGlobalBak,
+    '/impGlobalBak': apiImpGlobalBak,
+    '/revertGlobalBak': apiRevertGlobalBak,
+    '/runScript': apiRunScript,
+    '/saveData': apiSaveData,
+    '/surge': apiSurge,
+    '/update': apiUpdate,
+  }
+
+  for (const [key, handler] of Object.entries(apiHandlers)) {
+    if (api === key || api.startsWith(`${key}?`)) {
+      await handler()
+      break
+    }
   }
 }
 
@@ -318,7 +315,7 @@ function getBoxData() {
   const extraDatas =
     $.getdata(`${$.KEY_usercfgs.replace('#', '@')}.gist_cache_key`) || []
 
-  extraDatas.forEach((key) =&gt; {
+  extraDatas.forEach((key) => {
     datas[key] = $.getdata(key)
   })
 
@@ -331,11 +328,11 @@ function getBoxData() {
   const globalbaks = getGlobalBaks()
 
   // 把 `内置应用`和`订阅应用` 里需要持久化属性放到`datas`
-  sysapps.forEach((app) =&gt; Object.assign(datas, getAppDatas(app)))
-  usercfgs.appsubs.forEach((sub) =&gt; {
+  sysapps.forEach((app) => Object.assign(datas, getAppDatas(app)))
+  usercfgs.appsubs.forEach((sub) => {
     const subcache = appSubCaches[sub.url]
-    if (subcache &amp;&amp; subcache.apps &amp;&amp; Array.isArray(subcache.apps)) {
-      subcache.apps.forEach((app) =&gt; Object.assign(datas, getAppDatas(app)))
+    if (subcache && subcache.apps && Array.isArray(subcache.apps)) {
+      subcache.apps.forEach((app) => Object.assign(datas, getAppDatas(app)))
     }
   })
 
@@ -472,17 +469,17 @@ function getSystemApps() {
       ],
       descs_html: [
         "<h2>Token的获取方式</h2>",
-        "<ol>头像菜单 -&gt;</ol>",
-        "<ol>Settings -&gt;</ol>",
-        "<ol>Developer settings -&gt;</ol>",
-        "<ol>Personal access tokens -&gt;</ol>",
-        "<ol>Generate new token -&gt;</ol>",
+        "<ol>头像菜单 -></ol>",
+        "<ol>Settings -></ol>",
+        "<ol>Developer settings -></ol>",
+        "<ol>Personal access tokens -></ol>",
+        "<ol>Generate new token -></ol>",
         "<ol>在里面找到 gist 勾选提交</ol>",
         "<h2>Gist Revision Id</h2>",
         "<ol>打开Gist项目</ol>",
         "<ol>默认为Code，选择Revisions</ol>",
         "<ol>找到需要恢复的版本文件</ol>",
-        "<ol>点击右上角【...】&gt;【View file】</ol>",
+        "<ol>点击右上角【...】>【View file】</ol>",
         "<ol>浏览器地址最后一串为 RevisionId</ol>"
       ],
       scripts: [
@@ -587,7 +584,7 @@ function getUserCfgs() {
 
   // 处理异常数据：删除所有为 null 的订阅
   if (usercfgs.appsubs.includes(null)) {
-    usercfgs.appsubs = usercfgs.appsubs.filter((sub) =&gt; sub)
+    usercfgs.appsubs = usercfgs.appsubs.filter((sub) => sub)
     $.setjson(usercfgs, $.KEY_usercfgs)
   }
 
@@ -609,7 +606,7 @@ function getGlobalBaks() {
 
   // 处理异常数据：删除所有为 null 的备份
   if (backups.includes(null)) {
-    backups = backups.filter((bak) =&gt; bak)
+    backups = backups.filter((bak) => bak)
     $.setjson(backups, $.KEY_backups)
   }
 
@@ -621,14 +618,14 @@ function getGlobalBaks() {
  */
 function getVersions() {
   return $.http.get($.ver).then(
-    (resp) =&gt; {
+    (resp) => {
       try {
         $.json = $.toObj(resp.body)
       } catch {
         $.json = {}
       }
     },
-    () =&gt; ($.json = {})
+    () => ($.json = {})
   )
 }
 
@@ -655,14 +652,14 @@ function getCurSessions() {
 function getAppDatas(app) {
   const datas = {}
   const nulls = [null, undefined, 'null', 'undefined']
-  if (app.keys &amp;&amp; Array.isArray(app.keys)) {
-    app.keys.forEach((key) =&gt; {
+  if (app.keys && Array.isArray(app.keys)) {
+    app.keys.forEach((key) => {
       const val = $.getdata(key)
       datas[key] = nulls.includes(val) ? null : val
     })
   }
-  if (app.settings &amp;&amp; Array.isArray(app.settings)) {
-    app.settings.forEach((setting) =&gt; {
+  if (app.settings && Array.isArray(app.settings)) {
+    app.settings.forEach((setting) => {
       const key = setting.id
       const val = $.getdata(key)
       datas[key] = nulls.includes(val) ? null : val
@@ -673,10 +670,10 @@ function getAppDatas(app) {
 
 function dealKey(str) {
   const [rootKey, delIndex] = str.split('.')
-  if (rootKey &amp;&amp; rootKey.indexOf('@') &gt; -1 &amp;&amp; delIndex !== undefined) {
+  if (rootKey && rootKey.indexOf('@') > -1 && delIndex !== undefined) {
     const key = rootKey.replace('@', '')
     const datas = JSON.parse($.getdata(key))
-    if (Array.isArray(datas) &amp;&amp; delIndex &lt;= datas.length - 1) {
+    if (Array.isArray(datas) && delIndex <= datas.length - 1) {
       datas.splice(delIndex, 1)
       $.setdata(JSON.stringify(datas), key)
     }
@@ -686,7 +683,7 @@ function dealKey(str) {
 async function apiSave() {
   const data = $.toObj($request.body)
   if (Array.isArray(data)) {
-    data.forEach((dat) =&gt; {
+    data.forEach((dat) => {
       if (dat.val === null) {
         dealKey(dat.key)
       } else {
@@ -714,7 +711,7 @@ async function apiUpdate() {
   const path = data.path.split('.')
   const val = data.val
   const key = path.shift()
-  if (data.val &amp;&amp; path.join('.')) {    
+  if (data.val && path.join('.')) {    
     switch (key) {
       case 'usercfgs':
         const usercfgs = getUserCfgs()
@@ -739,6 +736,15 @@ async function apiAddAppSub() {
   $.json = getBoxData()
 }
 
+async function apiDeleteAppSub() {
+  const sub = $.toObj($request.body)
+  // 添加订阅
+  const usercfgs = getUserCfgs()
+  usercfgs.appsubs = usercfgs.appsubs.filter(e => e.url !== sub.url)
+  $.setjson(usercfgs, $.KEY_usercfgs)
+  $.json = getBoxData()
+}
+
 async function apiReloadAppSub() {
   const sub = $.toObj($request.body)
   if (sub) {
@@ -752,8 +758,8 @@ async function apiReloadAppSub() {
 async function apiDelGlobalBak() {
   const backup = $.toObj($request.body)
   const backups = $.getjson($.KEY_backups, [])
-  const bakIdx = backups.findIndex((b) =&gt; b.id === backup.id)
-  if (bakIdx &gt; -1) {
+  const bakIdx = backups.findIndex((b) => b.id === backup.id)
+  if (bakIdx > -1) {
     backups.splice(bakIdx, 1)
     $.setdata('', backup.id)
     $.setjson(backups, $.KEY_backups)
@@ -764,7 +770,7 @@ async function apiDelGlobalBak() {
 async function apiUpdateGlobalBak() {
   const { id: backupId, name: backupName } = $.toObj($request.body)
   const backups = $.getjson($.KEY_backups, [])
-  const backup = backups.find((b) =&gt; b.id === backupId)
+  const backup = backups.find((b) => b.id === backupId)
   if (backup) {
     backup.name = backupName
     $.setjson(backups, $.KEY_backups)
@@ -789,9 +795,9 @@ async function apiRevertGlobalBak() {
     $.setdata(JSON.stringify(chavy_boxjs_userCfgs), $.KEY_usercfgs)
     $.setdata(JSON.stringify(chavy_boxjs_cur_sessions), $.KEY_cursessions)
     $.setdata(JSON.stringify(chavy_boxjs_app_subCaches), $.KEY_app_subCaches)
-    const isNull = (val) =&gt;
+    const isNull = (val) =>
       [undefined, null, 'null', 'undefined', ''].includes(val)
-    Object.keys(datas).forEach((datkey) =&gt;
+    Object.keys(datas).forEach((datkey) =>
       $.setdata(isNull(datas[datkey]) ? '' : `${datas[datkey]}`, datkey)
     )
   }
@@ -834,7 +840,7 @@ async function apiRunScript() {
   const ishttpapi = /.*?@.*?:[0-9]+/.test(httpapi)
   let script_text = null
   if (opts.isRemote) {
-    await $.getScript(opts.url).then((script) =&gt; (script_text = script))
+    await $.getScript(opts.url).then((script) => (script_text = script))
   } else {
     script_text = opts.script
   }
@@ -842,18 +848,18 @@ async function apiRunScript() {
     script_text = `globalThis.$argument=\`${opts.argument}\`;${script_text}`
   }
   if (
-    $.isSurge() &amp;&amp;
-    !$.isLoon() &amp;&amp;
-    !$.isShadowrocket() &amp;&amp;
-    !$.isStash() &amp;&amp;
+    $.isSurge() &&
+    !$.isLoon() &&
+    !$.isShadowrocket() &&
+    !$.isStash() &&
     ishttpapi
   ) {
     const runOpts = { timeout: opts.timeout }
     await $.runScript(script_text, runOpts).then(
-      (resp) =&gt; ($.json = JSON.parse(resp))
+      (resp) => ($.json = JSON.parse(resp))
     )
   } else {
-    const result = await new Promise((resolve) =&gt; {
+    const result = await new Promise((resolve) => {
       $eval_env.resolve = resolve
       // 避免被执行脚本误认为是 rewrite 环境
       // 所以需要 `$request = undefined`
@@ -862,7 +868,7 @@ async function apiRunScript() {
       // 重写 console.log, 把日志记录到 $eval_env.cached_logs
       $eval_env.cached_logs = []
       console.cloned_log = console.log
-      console.log = (l) =&gt; {
+      console.log = (l) => {
         console.cloned_log(l)
         $eval_env.cached_logs.push(l)
       }
@@ -893,10 +899,10 @@ async function apiSurge() {
   const httpapi = $.getdata('@chavy_boxjs_userCfgs.httpapi')
   const ishttpapi = /.*?@.*?:[0-9]+/.test(httpapi)
   if (
-    $.isSurge() &amp;&amp;
-    !$.isLoon() &amp;&amp;
-    !$.isShadowrocket() &amp;&amp;
-    !$.isStash() &amp;&amp;
+    $.isSurge() &&
+    !$.isLoon() &&
+    !$.isShadowrocket() &&
+    !$.isStash() &&
     ishttpapi
   ) {
     const [key, prefix] = httpapi.split('@')
@@ -905,8 +911,8 @@ async function apiSurge() {
       'X-Key': key,
       'Accept': 'application/json, text/plain, */*'
     }
-    await new Promise((resolve) =&gt; {
-      $[opts.method.toLowerCase()](opts, (_, __, resp) =&gt; {
+    await new Promise((resolve) => {
+      $[opts.method.toLowerCase()](opts, (_, __, resp) => {
         $.json = JSON.parse(resp)
         resolve($.json)
       })
@@ -932,15 +938,15 @@ async function apiSaveData() {
 function reloadAppSubCache(url) {
   // 地址后面拼时间缀, 避免 GET 缓存
   const requrl = `${url}${
-    url.includes('?') ? '&amp;' : '?'
+    url.includes('?') ? '&' : '?'
   }_=${new Date().getTime()}`
-  return $.http.get(requrl).then((resp) =&gt; {
+  return $.http.get(requrl).then((resp) => {
     try {
       const subcaches = getAppSubCaches()
       subcaches[url] = $.toObj(resp.body)
       subcaches[url].updateTime = new Date()
       // 仅缓存存在 id 的订阅
-      Object.keys(subcaches).forEach(key =&gt; {
+      Object.keys(subcaches).forEach(key => {
           if (!subcaches[key].hasOwnProperty('id')) {
               delete subcaches[key]
           }
@@ -958,7 +964,7 @@ function update(obj, path, value) {
   const keys = path.split('.')
   let current = obj
 
-  for (let i = 0; i &lt; keys.length - 1; i++) {
+  for (let i = 0; i < keys.length - 1; i++) {
     if (!current[keys[i]]) {
       current[keys[i]] = {}
     }
@@ -972,7 +978,7 @@ async function reloadAppSubCaches() {
   $.msg($.name, '更新订阅: 开始!')
   const reloadActs = []
   const usercfgs = getUserCfgs()
-  usercfgs.appsubs.forEach((sub) =&gt; {
+  usercfgs.appsubs.forEach((sub) => {
     reloadActs.push(reloadAppSubCache(sub.url))
   })
   await Promise.all(reloadActs)
@@ -991,7 +997,7 @@ function upgradeUserData() {
     $.setjson(usercfgs.appsubCaches, $.KEY_app_subCaches)
     // 移除用户偏好中的订阅缓存
     delete usercfgs.appsubCaches
-    usercfgs.appsubs.forEach((sub) =&gt; {
+    usercfgs.appsubs.forEach((sub) => {
       delete sub._raw
       delete sub.apps
       delete sub.isErr
@@ -1012,13 +1018,13 @@ function upgradeUserData() {
 function upgradeGlobalBaks() {
   let oldbaks = $.getdata($.KEY_globalBaks)
   let newbaks = $.getjson($.KEY_backups, [])
-  const isEmpty = (bak) =&gt; [undefined, null, ''].includes(bak)
-  const isExistsInNew = (backupId) =&gt; newbaks.find((bak) =&gt; bak.id === backupId)
+  const isEmpty = (bak) => [undefined, null, ''].includes(bak)
+  const isExistsInNew = (backupId) => newbaks.find((bak) => bak.id === backupId)
 
   // 存在旧备份数据时, 升级备份数据格式
   if (!isEmpty(oldbaks)) {
     oldbaks = JSON.parse(oldbaks)
-    oldbaks.forEach((bak) =&gt; {
+    oldbaks.forEach((bak) => {
       if (isEmpty(bak)) return
       if (isEmpty(bak.bak)) return
       if (isExistsInNew(bak.id)) return
@@ -1057,7 +1063,7 @@ function updateCurSesssions(appId, data) {
   }
 
   const sessions = getAppSessions()
-  const session = sessions.find((session) =&gt; session.id === curSessionId)
+  const session = sessions.find((session) => session.id === curSessionId)
   if (!session) {
     console.log(
       `[updateCurSesssions] 跳过! 应用 [${appId}] 找不到当前会话, 请先应用会话!`
@@ -1137,5 +1143,4 @@ function doneApi() {
  * EnvJs
  */
 // prettier-ignore
-function Env(t,e){class s{constructor(t){this.env=t}send(t,e="GET"){t="string"==typeof t?{url:t}:t;let s=this.get;"POST"===e&amp;&amp;(s=this.post);const i=new Promise(((e,i)=&gt;{s.call(this,t,((t,s,o)=&gt;{t?i(t):e(s)}))}));return t.timeout?((t,e=1e3)=&gt;Promise.race([t,new Promise(((t,s)=&gt;{setTimeout((()=&gt;{s(new Error("请求超时"))}),e)}))]))(i,t.timeout):i}get(t){return this.send.call(this.env,t)}post(t){return this.send.call(this.env,t,"POST")}}return new class{constructor(t,e){this.logLevels={debug:0,info:1,warn:2,error:3},this.logLevelPrefixs={debug:"[DEBUG] ",info:"[INFO] ",warn:"[WARN] ",error:"[ERROR] "},this.logLevel="info",this.name=t,this.http=new s(this),this.data=null,this.dataFile="box.dat",this.logs=[],this.isMute=!1,this.isNeedRewrite=!1,this.logSeparator="\n",this.encoding="utf-8",this.startTime=(new Date).getTime(),Object.assign(this,e),this.log("",`🔔${this.name}, 开始!`)}getEnv(){return"undefined"!=typeof $environment&amp;&amp;$environment["surge-version"]?"Surge":"undefined"!=typeof $environment&amp;&amp;$environment["stash-version"]?"Stash":"undefined"!=typeof module&amp;&amp;module.exports?"Node.js":"undefined"!=typeof $task?"Quantumult X":"undefined"!=typeof $loon?"Loon":"undefined"!=typeof $rocket?"Shadowrocket":void 0}isNode(){return"Node.js"===this.getEnv()}isQuanX(){return"Quantumult X"===this.getEnv()}isSurge(){return"Surge"===this.getEnv()}isLoon(){return"Loon"===this.getEnv()}isShadowrocket(){return"Shadowrocket"===this.getEnv()}isStash(){return"Stash"===this.getEnv()}toObj(t,e=null){try{return JSON.parse(t)}catch{return e}}toStr(t,e=null,...s){try{return JSON.stringify(t,...s)}catch{return e}}getjson(t,e){let s=e;if(this.getdata(t))try{s=JSON.parse(this.getdata(t))}catch{}return s}setjson(t,e){try{return this.setdata(JSON.stringify(t),e)}catch{return!1}}getScript(t){return new Promise((e=&gt;{this.get({url:t},((t,s,i)=&gt;e(i)))}))}runScript(t,e){return new Promise((s=&gt;{let i=this.getdata("@chavy_boxjs_userCfgs.httpapi");i=i?i.replace(/\n/g,"").trim():i;let o=this.getdata("@chavy_boxjs_userCfgs.httpapi_timeout");o=o?1*o:20,o=e&amp;&amp;e.timeout?e.timeout:o;const[r,a]=i.split("@"),n={url:`http://${a}/v1/scripting/evaluate`,body:{script_text:t,mock_type:"cron",timeout:o},headers:{"X-Key":r,Accept:"*/*"},policy:"DIRECT",timeout:o};this.post(n,((t,e,i)=&gt;s(i)))})).catch((t=&gt;this.logErr(t)))}loaddata(){if(!this.isNode())return{};{this.fs=this.fs?this.fs:require("fs"),this.path=this.path?this.path:require("path");const t=this.path.resolve(this.dataFile),e=this.path.resolve(process.cwd(),this.dataFile),s=this.fs.existsSync(t),i=!s&amp;&amp;this.fs.existsSync(e);if(!s&amp;&amp;!i)return{};{const i=s?t:e;try{return JSON.parse(this.fs.readFileSync(i))}catch(t){return{}}}}}writedata(){if(this.isNode()){this.fs=this.fs?this.fs:require("fs"),this.path=this.path?this.path:require("path");const t=this.path.resolve(this.dataFile),e=this.path.resolve(process.cwd(),this.dataFile),s=this.fs.existsSync(t),i=!s&amp;&amp;this.fs.existsSync(e),o=JSON.stringify(this.data);s?this.fs.writeFileSync(t,o):i?this.fs.writeFileSync(e,o):this.fs.writeFileSync(t,o)}}lodash_get(t,e,s){const i=e.replace(/\[(\d+)\]/g,".$1").split(".");let o=t;for(const t of i)if(o=Object(o)[t],void 0===o)return s;return o}lodash_set(t,e,s){return Object(t)!==t||(Array.isArray(e)||(e=e.toString().match(/[^.[\]]+/g)||[]),e.slice(0,-1).reduce(((t,s,i)=&gt;Object(t[s])===t[s]?t[s]:t[s]=Math.abs(e[i+1])&gt;&gt;0==+e[i+1]?[]:{}),t)[e[e.length-1]]=s),t}getdata(t){let e=this.getval(t);if(/^@/.test(t)){const[,s,i]=/^@(.*?)\.(.*?)$/.exec(t),o=s?this.getval(s):"";if(o)try{const t=JSON.parse(o);e=t?this.lodash_get(t,i,""):e}catch(t){e=""}}return e}setdata(t,e){let s=!1;if(/^@/.test(e)){const[,i,o]=/^@(.*?)\.(.*?)$/.exec(e),r=this.getval(i),a=i?"null"===r?null:r||"{}":"{}";try{const e=JSON.parse(a);this.lodash_set(e,o,t),s=this.setval(JSON.stringify(e),i)}catch(e){const r={};this.lodash_set(r,o,t),s=this.setval(JSON.stringify(r),i)}}else s=this.setval(t,e);return s}getval(t){switch(this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":return $persistentStore.read(t);case"Quantumult X":return $prefs.valueForKey(t);case"Node.js":return this.data=this.loaddata(),this.data[t];default:return this.data&amp;&amp;this.data[t]||null}}setval(t,e){switch(this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":return $persistentStore.write(t,e);case"Quantumult X":return $prefs.setValueForKey(t,e);case"Node.js":return this.data=this.loaddata(),this.data[e]=t,this.writedata(),!0;default:return this.data&amp;&amp;this.data[e]||null}}initGotEnv(t){this.got=this.got?this.got:require("got"),this.cktough=this.cktough?this.cktough:require("tough-cookie"),this.ckjar=this.ckjar?this.ckjar:new this.cktough.CookieJar,t&amp;&amp;(t.headers=t.headers?t.headers:{},t&amp;&amp;(t.headers=t.headers?t.headers:{},void 0===t.headers.cookie&amp;&amp;void 0===t.headers.Cookie&amp;&amp;void 0===t.cookieJar&amp;&amp;(t.cookieJar=this.ckjar)))}get(t,e=(()=&gt;{})){switch(t.headers&amp;&amp;(delete t.headers["Content-Type"],delete t.headers["Content-Length"],delete t.headers["content-type"],delete t.headers["content-length"]),t.params&amp;&amp;(t.url+="?"+this.queryStr(t.params)),void 0===t.followRedirect||t.followRedirect||((this.isSurge()||this.isLoon())&amp;&amp;(t["auto-redirect"]=!1),this.isQuanX()&amp;&amp;(t.opts?t.opts.redirection=!1:t.opts={redirection:!1})),this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":default:this.isSurge()&amp;&amp;this.isNeedRewrite&amp;&amp;(t.headers=t.headers||{},Object.assign(t.headers,{"X-Surge-Skip-Scripting":!1})),$httpClient.get(t,((t,s,i)=&gt;{!t&amp;&amp;s&amp;&amp;(s.body=i,s.statusCode=s.status?s.status:s.statusCode,s.status=s.statusCode),e(t,s,i)}));break;case"Quantumult X":this.isNeedRewrite&amp;&amp;(t.opts=t.opts||{},Object.assign(t.opts,{hints:!1})),$task.fetch(t).then((t=&gt;{const{statusCode:s,statusCode:i,headers:o,body:r,bodyBytes:a}=t;e(null,{status:s,statusCode:i,headers:o,body:r,bodyBytes:a},r,a)}),(t=&gt;e(t&amp;&amp;t.error||"UndefinedError")));break;case"Node.js":let s=require("iconv-lite");this.initGotEnv(t),this.got(t).on("redirect",((t,e)=&gt;{try{if(t.headers["set-cookie"]){const s=t.headers["set-cookie"].map(this.cktough.Cookie.parse).toString();s&amp;&amp;this.ckjar.setCookieSync(s,null),e.cookieJar=this.ckjar}}catch(t){this.logErr(t)}})).then((t=&gt;{const{statusCode:i,statusCode:o,headers:r,rawBody:a}=t,n=s.decode(a,this.encoding);e(null,{status:i,statusCode:o,headers:r,rawBody:a,body:n},n)}),(t=&gt;{const{message:i,response:o}=t;e(i,o,o&amp;&amp;s.decode(o.rawBody,this.encoding))}));break}}post(t,e=(()=&gt;{})){const s=t.method?t.method.toLocaleLowerCase():"post";switch(t.body&amp;&amp;t.headers&amp;&amp;!t.headers["Content-Type"]&amp;&amp;!t.headers["content-type"]&amp;&amp;(t.headers["content-type"]="application/x-www-form-urlencoded"),t.headers&amp;&amp;(delete t.headers["Content-Length"],delete t.headers["content-length"]),void 0===t.followRedirect||t.followRedirect||((this.isSurge()||this.isLoon())&amp;&amp;(t["auto-redirect"]=!1),this.isQuanX()&amp;&amp;(t.opts?t.opts.redirection=!1:t.opts={redirection:!1})),this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":default:this.isSurge()&amp;&amp;this.isNeedRewrite&amp;&amp;(t.headers=t.headers||{},Object.assign(t.headers,{"X-Surge-Skip-Scripting":!1})),$httpClient[s](t,((t,s,i)=&gt;{!t&amp;&amp;s&amp;&amp;(s.body=i,s.statusCode=s.status?s.status:s.statusCode,s.status=s.statusCode),e(t,s,i)}));break;case"Quantumult X":t.method=s,this.isNeedRewrite&amp;&amp;(t.opts=t.opts||{},Object.assign(t.opts,{hints:!1})),$task.fetch(t).then((t=&gt;{const{statusCode:s,statusCode:i,headers:o,body:r,bodyBytes:a}=t;e(null,{status:s,statusCode:i,headers:o,body:r,bodyBytes:a},r,a)}),(t=&gt;e(t&amp;&amp;t.error||"UndefinedError")));break;case"Node.js":let i=require("iconv-lite");this.initGotEnv(t);const{url:o,...r}=t;this.got[s](o,r).then((t=&gt;{const{statusCode:s,statusCode:o,headers:r,rawBody:a}=t,n=i.decode(a,this.encoding);e(null,{status:s,statusCode:o,headers:r,rawBody:a,body:n},n)}),(t=&gt;{const{message:s,response:o}=t;e(s,o,o&amp;&amp;i.decode(o.rawBody,this.encoding))}));break}}time(t,e=null){const s=e?new Date(e):new Date;let i={"M+":s.getMonth()+1,"d+":s.getDate(),"H+":s.getHours(),"m+":s.getMinutes(),"s+":s.getSeconds(),"q+":Math.floor((s.getMonth()+3)/3),S:s.getMilliseconds()};/(y+)/.test(t)&amp;&amp;(t=t.replace(RegExp.$1,(s.getFullYear()+"").substr(4-RegExp.$1.length)));for(let e in i)new RegExp("("+e+")").test(t)&amp;&amp;(t=t.replace(RegExp.$1,1==RegExp.$1.length?i[e]:("00"+i[e]).substr((""+i[e]).length)));return t}queryStr(t){let e="";for(const s in t){let i=t[s];null!=i&amp;&amp;""!==i&amp;&amp;("object"==typeof i&amp;&amp;(i=JSON.stringify(i)),e+=`${s}=${i}&amp;`)}return e=e.substring(0,e.length-1),e}msg(e=t,s="",i="",o={}){const r=t=&gt;{const{$open:e,$copy:s,$media:i,$mediaMime:o}=t;switch(typeof t){case void 0:return t;case"string":switch(this.getEnv()){case"Surge":case"Stash":default:return{url:t};case"Loon":case"Shadowrocket":return t;case"Quantumult X":return{"open-url":t};case"Node.js":return}case"object":switch(this.getEnv()){case"Surge":case"Stash":case"Shadowrocket":default:{const r={};let a=t.openUrl||t.url||t["open-url"]||e;a&amp;&amp;Object.assign(r,{action:"open-url",url:a});let n=t["update-pasteboard"]||t.updatePasteboard||s;if(n&amp;&amp;Object.assign(r,{action:"clipboard",text:n}),i){let t,e,s;if(i.startsWith("http"))t=i;else if(i.startsWith("data:")){const[t]=i.split(";"),[,o]=i.split(",");e=o,s=t.replace("data:","")}else{e=i,s=(t=&gt;{const e={JVBERi0:"application/pdf",R0lGODdh:"image/gif",R0lGODlh:"image/gif",iVBORw0KGgo:"image/png","/9j/":"image/jpg"};for(var s in e)if(0===t.indexOf(s))return e[s];return null})(i)}Object.assign(r,{"media-url":t,"media-base64":e,"media-base64-mime":o??s})}return Object.assign(r,{"auto-dismiss":t["auto-dismiss"],sound:t.sound}),r}case"Loon":{const s={};let o=t.openUrl||t.url||t["open-url"]||e;o&amp;&amp;Object.assign(s,{openUrl:o});let r=t.mediaUrl||t["media-url"];return i?.startsWith("http")&amp;&amp;(r=i),r&amp;&amp;Object.assign(s,{mediaUrl:r}),console.log(JSON.stringify(s)),s}case"Quantumult X":{const o={};let r=t["open-url"]||t.url||t.openUrl||e;r&amp;&amp;Object.assign(o,{"open-url":r});let a=t["media-url"]||t.mediaUrl;i?.startsWith("http")&amp;&amp;(a=i),a&amp;&amp;Object.assign(o,{"media-url":a});let n=t["update-pasteboard"]||t.updatePasteboard||s;return n&amp;&amp;Object.assign(o,{"update-pasteboard":n}),console.log(JSON.stringify(o)),o}case"Node.js":return}default:return}};if(!this.isMute)switch(this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":default:$notification.post(e,s,i,r(o));break;case"Quantumult X":$notify(e,s,i,r(o));break;case"Node.js":break}if(!this.isMuteLog){let t=["","==============📣系统通知📣=============="];t.push(e),s&amp;&amp;t.push(s),i&amp;&amp;t.push(i),console.log(t.join("\n")),this.logs=this.logs.concat(t)}}debug(...t){this.logLevels[this.logLevel]&lt;=this.logLevels.debug&amp;&amp;(t.length&gt;0&amp;&amp;(this.logs=[...this.logs,...t]),console.log(`${this.logLevelPrefixs.debug}${t.map((t=&gt;t??String(t))).join(this.logSeparator)}`))}info(...t){this.logLevels[this.logLevel]&lt;=this.logLevels.info&amp;&amp;(t.length&gt;0&amp;&amp;(this.logs=[...this.logs,...t]),console.log(`${this.logLevelPrefixs.info}${t.map((t=&gt;t??String(t))).join(this.logSeparator)}`))}warn(...t){this.logLevels[this.logLevel]&lt;=this.logLevels.warn&amp;&amp;(t.length&gt;0&amp;&amp;(this.logs=[...this.logs,...t]),console.log(`${this.logLevelPrefixs.warn}${t.map((t=&gt;t??String(t))).join(this.logSeparator)}`))}error(...t){this.logLevels[this.logLevel]&lt;=this.logLevels.error&amp;&amp;(t.length&gt;0&amp;&amp;(this.logs=[...this.logs,...t]),console.log(`${this.logLevelPrefixs.error}${t.map((t=&gt;t??String(t))).join(this.logSeparator)}`))}log(...t){t.length&gt;0&amp;&amp;(this.logs=[...this.logs,...t]),console.log(t.map((t=&gt;t??String(t))).join(this.logSeparator))}logErr(t,e){switch(this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":case"Quantumult X":default:this.log("",`❗️${this.name}, 错误!`,e,t);break;case"Node.js":this.log("",`❗️${this.name}, 错误!`,e,void 0!==t.message?t.message:t,t.stack);break}}wait(t){return new Promise((e=&gt;setTimeout(e,t)))}done(t={}){const e=((new Date).getTime()-this.startTime)/1e3;switch(this.log("",`🔔${this.name}, 结束! 🕛 ${e} 秒`),this.log(),this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":case"Quantumult X":default:$done(t);break;case"Node.js":process.exit(1)}}}(t,e)}
-</title>
+function Env(t,e){class s{constructor(t){this.env=t}send(t,e="GET"){t="string"==typeof t?{url:t}:t;let s=this.get;"POST"===e&&(s=this.post);const i=new Promise(((e,i)=>{s.call(this,t,((t,s,o)=>{t?i(t):e(s)}))}));return t.timeout?((t,e=1e3)=>Promise.race([t,new Promise(((t,s)=>{setTimeout((()=>{s(new Error("请求超时"))}),e)}))]))(i,t.timeout):i}get(t){return this.send.call(this.env,t)}post(t){return this.send.call(this.env,t,"POST")}}return new class{constructor(t,e){this.logLevels={debug:0,info:1,warn:2,error:3},this.logLevelPrefixs={debug:"[DEBUG] ",info:"[INFO] ",warn:"[WARN] ",error:"[ERROR] "},this.logLevel="info",this.name=t,this.http=new s(this),this.data=null,this.dataFile="box.dat",this.logs=[],this.isMute=!1,this.isNeedRewrite=!1,this.logSeparator="\n",this.encoding="utf-8",this.startTime=(new Date).getTime(),Object.assign(this,e),this.log("",`🔔${this.name}, 开始!`)}getEnv(){return"undefined"!=typeof $environment&&$environment["surge-version"]?"Surge":"undefined"!=typeof $environment&&$environment["stash-version"]?"Stash":"undefined"!=typeof module&&module.exports?"Node.js":"undefined"!=typeof $task?"Quantumult X":"undefined"!=typeof $loon?"Loon":"undefined"!=typeof $rocket?"Shadowrocket":void 0}isNode(){return"Node.js"===this.getEnv()}isQuanX(){return"Quantumult X"===this.getEnv()}isSurge(){return"Surge"===this.getEnv()}isLoon(){return"Loon"===this.getEnv()}isShadowrocket(){return"Shadowrocket"===this.getEnv()}isStash(){return"Stash"===this.getEnv()}toObj(t,e=null){try{return JSON.parse(t)}catch{return e}}toStr(t,e=null,...s){try{return JSON.stringify(t,...s)}catch{return e}}getjson(t,e){let s=e;if(this.getdata(t))try{s=JSON.parse(this.getdata(t))}catch{}return s}setjson(t,e){try{return this.setdata(JSON.stringify(t),e)}catch{return!1}}getScript(t){return new Promise((e=>{this.get({url:t},((t,s,i)=>e(i)))}))}runScript(t,e){return new Promise((s=>{let i=this.getdata("@chavy_boxjs_userCfgs.httpapi");i=i?i.replace(/\n/g,"").trim():i;let o=this.getdata("@chavy_boxjs_userCfgs.httpapi_timeout");o=o?1*o:20,o=e&&e.timeout?e.timeout:o;const[r,a]=i.split("@"),n={url:`http://${a}/v1/scripting/evaluate`,body:{script_text:t,mock_type:"cron",timeout:o},headers:{"X-Key":r,Accept:"*/*"},policy:"DIRECT",timeout:o};this.post(n,((t,e,i)=>s(i)))})).catch((t=>this.logErr(t)))}loaddata(){if(!this.isNode())return{};{this.fs=this.fs?this.fs:require("fs"),this.path=this.path?this.path:require("path");const t=this.path.resolve(this.dataFile),e=this.path.resolve(process.cwd(),this.dataFile),s=this.fs.existsSync(t),i=!s&&this.fs.existsSync(e);if(!s&&!i)return{};{const i=s?t:e;try{return JSON.parse(this.fs.readFileSync(i))}catch(t){return{}}}}}writedata(){if(this.isNode()){this.fs=this.fs?this.fs:require("fs"),this.path=this.path?this.path:require("path");const t=this.path.resolve(this.dataFile),e=this.path.resolve(process.cwd(),this.dataFile),s=this.fs.existsSync(t),i=!s&&this.fs.existsSync(e),o=JSON.stringify(this.data);s?this.fs.writeFileSync(t,o):i?this.fs.writeFileSync(e,o):this.fs.writeFileSync(t,o)}}lodash_get(t,e,s){const i=e.replace(/\[(\d+)\]/g,".$1").split(".");let o=t;for(const t of i)if(o=Object(o)[t],void 0===o)return s;return o}lodash_set(t,e,s){return Object(t)!==t||(Array.isArray(e)||(e=e.toString().match(/[^.[\]]+/g)||[]),e.slice(0,-1).reduce(((t,s,i)=>Object(t[s])===t[s]?t[s]:t[s]=Math.abs(e[i+1])>>0==+e[i+1]?[]:{}),t)[e[e.length-1]]=s),t}getdata(t){let e=this.getval(t);if(/^@/.test(t)){const[,s,i]=/^@(.*?)\.(.*?)$/.exec(t),o=s?this.getval(s):"";if(o)try{const t=JSON.parse(o);e=t?this.lodash_get(t,i,""):e}catch(t){e=""}}return e}setdata(t,e){let s=!1;if(/^@/.test(e)){const[,i,o]=/^@(.*?)\.(.*?)$/.exec(e),r=this.getval(i),a=i?"null"===r?null:r||"{}":"{}";try{const e=JSON.parse(a);this.lodash_set(e,o,t),s=this.setval(JSON.stringify(e),i)}catch(e){const r={};this.lodash_set(r,o,t),s=this.setval(JSON.stringify(r),i)}}else s=this.setval(t,e);return s}getval(t){switch(this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":return $persistentStore.read(t);case"Quantumult X":return $prefs.valueForKey(t);case"Node.js":return this.data=this.loaddata(),this.data[t];default:return this.data&&this.data[t]||null}}setval(t,e){switch(this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":return $persistentStore.write(t,e);case"Quantumult X":return $prefs.setValueForKey(t,e);case"Node.js":return this.data=this.loaddata(),this.data[e]=t,this.writedata(),!0;default:return this.data&&this.data[e]||null}}initGotEnv(t){this.got=this.got?this.got:require("got"),this.cktough=this.cktough?this.cktough:require("tough-cookie"),this.ckjar=this.ckjar?this.ckjar:new this.cktough.CookieJar,t&&(t.headers=t.headers?t.headers:{},t&&(t.headers=t.headers?t.headers:{},void 0===t.headers.cookie&&void 0===t.headers.Cookie&&void 0===t.cookieJar&&(t.cookieJar=this.ckjar)))}get(t,e=(()=>{})){switch(t.headers&&(delete t.headers["Content-Type"],delete t.headers["Content-Length"],delete t.headers["content-type"],delete t.headers["content-length"]),t.params&&(t.url+="?"+this.queryStr(t.params)),void 0===t.followRedirect||t.followRedirect||((this.isSurge()||this.isLoon())&&(t["auto-redirect"]=!1),this.isQuanX()&&(t.opts?t.opts.redirection=!1:t.opts={redirection:!1})),this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":default:this.isSurge()&&this.isNeedRewrite&&(t.headers=t.headers||{},Object.assign(t.headers,{"X-Surge-Skip-Scripting":!1})),$httpClient.get(t,((t,s,i)=>{!t&&s&&(s.body=i,s.statusCode=s.status?s.status:s.statusCode,s.status=s.statusCode),e(t,s,i)}));break;case"Quantumult X":this.isNeedRewrite&&(t.opts=t.opts||{},Object.assign(t.opts,{hints:!1})),$task.fetch(t).then((t=>{const{statusCode:s,statusCode:i,headers:o,body:r,bodyBytes:a}=t;e(null,{status:s,statusCode:i,headers:o,body:r,bodyBytes:a},r,a)}),(t=>e(t&&t.error||"UndefinedError")));break;case"Node.js":let s=require("iconv-lite");this.initGotEnv(t),this.got(t).on("redirect",((t,e)=>{try{if(t.headers["set-cookie"]){const s=t.headers["set-cookie"].map(this.cktough.Cookie.parse).toString();s&&this.ckjar.setCookieSync(s,null),e.cookieJar=this.ckjar}}catch(t){this.logErr(t)}})).then((t=>{const{statusCode:i,statusCode:o,headers:r,rawBody:a}=t,n=s.decode(a,this.encoding);e(null,{status:i,statusCode:o,headers:r,rawBody:a,body:n},n)}),(t=>{const{message:i,response:o}=t;e(i,o,o&&s.decode(o.rawBody,this.encoding))}));break}}post(t,e=(()=>{})){const s=t.method?t.method.toLocaleLowerCase():"post";switch(t.body&&t.headers&&!t.headers["Content-Type"]&&!t.headers["content-type"]&&(t.headers["content-type"]="application/x-www-form-urlencoded"),t.headers&&(delete t.headers["Content-Length"],delete t.headers["content-length"]),void 0===t.followRedirect||t.followRedirect||((this.isSurge()||this.isLoon())&&(t["auto-redirect"]=!1),this.isQuanX()&&(t.opts?t.opts.redirection=!1:t.opts={redirection:!1})),this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":default:this.isSurge()&&this.isNeedRewrite&&(t.headers=t.headers||{},Object.assign(t.headers,{"X-Surge-Skip-Scripting":!1})),$httpClient[s](t,((t,s,i)=>{!t&&s&&(s.body=i,s.statusCode=s.status?s.status:s.statusCode,s.status=s.statusCode),e(t,s,i)}));break;case"Quantumult X":t.method=s,this.isNeedRewrite&&(t.opts=t.opts||{},Object.assign(t.opts,{hints:!1})),$task.fetch(t).then((t=>{const{statusCode:s,statusCode:i,headers:o,body:r,bodyBytes:a}=t;e(null,{status:s,statusCode:i,headers:o,body:r,bodyBytes:a},r,a)}),(t=>e(t&&t.error||"UndefinedError")));break;case"Node.js":let i=require("iconv-lite");this.initGotEnv(t);const{url:o,...r}=t;this.got[s](o,r).then((t=>{const{statusCode:s,statusCode:o,headers:r,rawBody:a}=t,n=i.decode(a,this.encoding);e(null,{status:s,statusCode:o,headers:r,rawBody:a,body:n},n)}),(t=>{const{message:s,response:o}=t;e(s,o,o&&i.decode(o.rawBody,this.encoding))}));break}}time(t,e=null){const s=e?new Date(e):new Date;let i={"M+":s.getMonth()+1,"d+":s.getDate(),"H+":s.getHours(),"m+":s.getMinutes(),"s+":s.getSeconds(),"q+":Math.floor((s.getMonth()+3)/3),S:s.getMilliseconds()};/(y+)/.test(t)&&(t=t.replace(RegExp.$1,(s.getFullYear()+"").substr(4-RegExp.$1.length)));for(let e in i)new RegExp("("+e+")").test(t)&&(t=t.replace(RegExp.$1,1==RegExp.$1.length?i[e]:("00"+i[e]).substr((""+i[e]).length)));return t}queryStr(t){let e="";for(const s in t){let i=t[s];null!=i&&""!==i&&("object"==typeof i&&(i=JSON.stringify(i)),e+=`${s}=${i}&`)}return e=e.substring(0,e.length-1),e}msg(e=t,s="",i="",o={}){const r=t=>{const{$open:e,$copy:s,$media:i,$mediaMime:o}=t;switch(typeof t){case void 0:return t;case"string":switch(this.getEnv()){case"Surge":case"Stash":default:return{url:t};case"Loon":case"Shadowrocket":return t;case"Quantumult X":return{"open-url":t};case"Node.js":return}case"object":switch(this.getEnv()){case"Surge":case"Stash":case"Shadowrocket":default:{const r={};let a=t.openUrl||t.url||t["open-url"]||e;a&&Object.assign(r,{action:"open-url",url:a});let n=t["update-pasteboard"]||t.updatePasteboard||s;if(n&&Object.assign(r,{action:"clipboard",text:n}),i){let t,e,s;if(i.startsWith("http"))t=i;else if(i.startsWith("data:")){const[t]=i.split(";"),[,o]=i.split(",");e=o,s=t.replace("data:","")}else{e=i,s=(t=>{const e={JVBERi0:"application/pdf",R0lGODdh:"image/gif",R0lGODlh:"image/gif",iVBORw0KGgo:"image/png","/9j/":"image/jpg"};for(var s in e)if(0===t.indexOf(s))return e[s];return null})(i)}Object.assign(r,{"media-url":t,"media-base64":e,"media-base64-mime":o??s})}return Object.assign(r,{"auto-dismiss":t["auto-dismiss"],sound:t.sound}),r}case"Loon":{const s={};let o=t.openUrl||t.url||t["open-url"]||e;o&&Object.assign(s,{openUrl:o});let r=t.mediaUrl||t["media-url"];return i?.startsWith("http")&&(r=i),r&&Object.assign(s,{mediaUrl:r}),console.log(JSON.stringify(s)),s}case"Quantumult X":{const o={};let r=t["open-url"]||t.url||t.openUrl||e;r&&Object.assign(o,{"open-url":r});let a=t["media-url"]||t.mediaUrl;i?.startsWith("http")&&(a=i),a&&Object.assign(o,{"media-url":a});let n=t["update-pasteboard"]||t.updatePasteboard||s;return n&&Object.assign(o,{"update-pasteboard":n}),console.log(JSON.stringify(o)),o}case"Node.js":return}default:return}};if(!this.isMute)switch(this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":default:$notification.post(e,s,i,r(o));break;case"Quantumult X":$notify(e,s,i,r(o));break;case"Node.js":break}if(!this.isMuteLog){let t=["","==============📣系统通知📣=============="];t.push(e),s&&t.push(s),i&&t.push(i),console.log(t.join("\n")),this.logs=this.logs.concat(t)}}debug(...t){this.logLevels[this.logLevel]<=this.logLevels.debug&&(t.length>0&&(this.logs=[...this.logs,...t]),console.log(`${this.logLevelPrefixs.debug}${t.map((t=>t??String(t))).join(this.logSeparator)}`))}info(...t){this.logLevels[this.logLevel]<=this.logLevels.info&&(t.length>0&&(this.logs=[...this.logs,...t]),console.log(`${this.logLevelPrefixs.info}${t.map((t=>t??String(t))).join(this.logSeparator)}`))}warn(...t){this.logLevels[this.logLevel]<=this.logLevels.warn&&(t.length>0&&(this.logs=[...this.logs,...t]),console.log(`${this.logLevelPrefixs.warn}${t.map((t=>t??String(t))).join(this.logSeparator)}`))}error(...t){this.logLevels[this.logLevel]<=this.logLevels.error&&(t.length>0&&(this.logs=[...this.logs,...t]),console.log(`${this.logLevelPrefixs.error}${t.map((t=>t??String(t))).join(this.logSeparator)}`))}log(...t){t.length>0&&(this.logs=[...this.logs,...t]),console.log(t.map((t=>t??String(t))).join(this.logSeparator))}logErr(t,e){switch(this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":case"Quantumult X":default:this.log("",`❗️${this.name}, 错误!`,e,t);break;case"Node.js":this.log("",`❗️${this.name}, 错误!`,e,void 0!==t.message?t.message:t,t.stack);break}}wait(t){return new Promise((e=>setTimeout(e,t)))}done(t={}){const e=((new Date).getTime()-this.startTime)/1e3;switch(this.log("",`🔔${this.name}, 结束! 🕛 ${e} 秒`),this.log(),this.getEnv()){case"Surge":case"Loon":case"Stash":case"Shadowrocket":case"Quantumult X":default:$done(t);break;case"Node.js":process.exit(1)}}}(t,e)}
