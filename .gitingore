@@ -1,3 +1,5 @@
 auto_push.sh
 download_config.py
 download_icon.py
+*.py
+*.sh
