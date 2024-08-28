@@ -1,7 +1,6 @@
 import time
 import requests
 from typing import List
-from bs4 import BeautifulSoup
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 '
@@ -50,12 +49,13 @@ rewrite_urls = [
     'https://github.com/ddgksf2013/Rewrite/raw/master/Html/Q-Search.conf',
     'https://github.com/ddgksf2013/Rewrite/raw/master/Html/Douban.conf',
     'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/XiaoHongShu.conf',
-    'https://gist.githubusercontent.com/ddgksf2013/f43026707830c7818ee3ba624e383c8d/raw/baiduCloud.vip.js',
+    'https://gist.githubusercontent.com/ddgksf2013/f43026707830c7818ee3ba624e383c8d/raw/baiduCloud.adblock.js',
     'https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/Function/UnblockURLinWeChat.conf',
     'https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/Html/General.conf',
     'https://raw.githubusercontent.com/Orz-3/QuantumultX/master/Netflix_ratings.conf',
     'https://raw.githubusercontent.com/id77/QuantumultX/master/rewrite/Youtube_CC.conf',
-    'https://raw.githubusercontent.com/chavyleung/scripts/master/box/rewrite/boxjs.rewrite.quanx.conf']
+    'https://raw.githubusercontent.com/chavyleung/scripts/master/box/rewrite/boxjs.rewrite.quanx.conf',
+    'https://raw.githubusercontent.com/w37fhy/QuantumultX/master/QuantumultX_Cookie.conf']
 
 config_urls = ['https://github.com/ddgksf2013/Profile/raw/master/QuantumultX.conf']
 
@@ -66,7 +66,8 @@ task_urls = ['https://raw.githubusercontent.com/deezertidal/private/main/rumors.
              'https://raw.githubusercontent.com/deezertidal/private/main/lifeindex.js',
              'https://whatshub.top/plugin/movie.js',
              'https://raw.githubusercontent.com/KOP-XIAO/QuantumultX/master/Scripts/UI-Action.json',
-             'https://raw.githubusercontent.com/KOP-XIAO/QuantumultX/master/Scripts/streaming-ui-check.js']
+             'https://raw.githubusercontent.com/KOP-XIAO/QuantumultX/master/Scripts/streaming-ui-check.js',
+             'https://raw.githubusercontent.com/shufflewzc/faker/main/qx.json']
 
 http_urls = ['https://raw.githubusercontent.com/chavyleung/scripts/master/chavy.box.js']
 
@@ -78,17 +79,19 @@ def main(urls: List[str], dir_name: str) -> None:
         r = requests.get(url)
         if r.status_code == 200:
             time.sleep(1)
-            with open(f'D:/ProgramData/Codes/GitHub/quanx/{dir_name}/' + url.split('/')[-1], 'w',
-                      encoding='utf-8') as file:
+            file_name = f'D:/ProgramData/Codes/GitHub/quanx/{dir_name}/' + url.split('/')[-1]
+            with open(file_name, 'w', encoding='utf-8') as file:
                 file.write(r.text)
+        else:
+            print(url)
 
 
 if __name__ == '__main__':
-    main(filter_urls, 'Filter')
-    main(rewrite_urls, 'Rewrite')
-    main(config_urls, 'Config')
-    main(task_urls, 'Task')
-    main(http_urls, 'Http')
-    main(parser_urls, 'Parser')
+    main(urls=filter_urls, dir_name='Filter')
+    main(urls=rewrite_urls, dir_name='Rewrite')
+    main(urls=config_urls, dir_name='Config')
+    main(urls=task_urls, dir_name='Task')
+    main(urls=http_urls, dir_name='Http')
+    main(urls=parser_urls, dir_name='Parser')
     print('All Done!')
 
