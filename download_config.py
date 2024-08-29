@@ -28,7 +28,6 @@ filter_urls = [
     'https://raw.githubusercontent.com/ddgksf2013/Filter/master/GoogleVoice.list',
     'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/12306/12306.list',
     'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/ABC/ABC.list',
-    'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Apple/Apple.list',
     'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/AppleMusic/AppleMusic.list',
     'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Bing/Bing.list',
     'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/MeiTuan/MeiTuan.list',
