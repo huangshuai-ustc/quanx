@@ -12,16 +12,16 @@ filter_urls = [
     'https://raw.githubusercontent.com/ddgksf2013/Filter/master/Unbreak.list',
     'https://raw.githubusercontent.com/Cats-Team/AdRules/main/qx.conf',
     'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/TikTok/TikTok.list',
-    'https://raw.githubusercontent.com/DivineEngine/Profiles/master/Surge/Ruleset/Extra/Google/GoogleVoice.list',
     'https://github.com/blackmatrix7/ios_rule_script/raw/master/rule/QuantumultX/OpenAI/OpenAI.list',
     'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Spotify/Spotify.list',
     'https://raw.githubusercontent.com/ddgksf2013/Filter/master/Streaming.list',
     'https://raw.githubusercontent.com/ddgksf2013/Filter/master/StreamingSE.list',
     'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Apple/Apple.list',
-    'https://raw.githubusercontent.com/DivineEngine/Profiles/master/Surge/Ruleset/Global.list',
     'https://raw.githubusercontent.com/VirgilClyne/GetSomeFries/main/ruleset/ASN.China.list',
     'https://whatshub.top/rule/WeChat.list',
+    'https://whatshub.top/rewrite/wechatad.conf',
     'https://whatshub.top/rewrite/ZhihuBlock.conf',
+    'https://whatshub.top/rewrite/biliad.conf',
     'https://whatshub.top/rewrite/biliad.conf',
     'https://whatshub.top/rewrite/doc.conf',
     'https://raw.githubusercontent.com/ConnersHua/RuleGo/master/Surge/Ruleset/Proxy.list',
@@ -83,13 +83,14 @@ parser_urls = ['https://raw.githubusercontent.com/KOP-XIAO/QuantumultX/master/Sc
 
 def main(urls: List[str], dir_name: str) -> None:
     for url in urls:
-        r = requests.get(url)
+        r = requests.get(url, headers=headers)
         if r.status_code == 200:
             time.sleep(1)
             file_name = f'D:/ProgramData/Codes/GitHub/quanx/{dir_name}/' + url.split('/')[-1]
             with open(file_name, 'w', encoding='utf-8') as file:
                 file.write(r.text)
         else:
+            print(r.status_code)
             print(url)
 
 
