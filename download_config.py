@@ -50,7 +50,7 @@ rewrite_urls = [
     'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Weibo.conf',
     'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Ximalaya.conf',
     'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/Amap.conf',
-    'https://github.com/ddgksf2013/Rewrite/blob/master/AdBlock/NeteaseAds.conf',
+    'https://raw.githubusercontent.com/ddgksf2013/Rewrite/refs/heads/master/AdBlock/NeteaseAds.conf',
     'https://github.com/ddgksf2013/Rewrite/raw/master/Html/WebAdBlock.conf',
     'https://github.com/ddgksf2013/Rewrite/raw/master/Html/Q-Search.conf',
     'https://github.com/ddgksf2013/Rewrite/raw/master/Html/Douban.conf',
