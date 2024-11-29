@@ -101,4 +101,3 @@ if __name__ == '__main__':
     main(urls=http_urls, dir_name='Http')
     main(urls=parser_urls, dir_name='Parser')
     print('All Done!')
-
