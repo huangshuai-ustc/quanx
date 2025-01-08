@@ -28,7 +28,8 @@ filter_urls = [
     'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/MeiTuan/MeiTuan.list',
     'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Tencent/Tencent.list',
     'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/XieCheng/XieCheng.list',
-    'https://whatshub.top/rule/Alibaba.list']
+    'https://whatshub.top/rule/Alibaba.list',
+    'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list']
 
 rewrite_urls = [
     'https://whatshub.top/rewrite/wechatad.conf',
