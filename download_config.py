@@ -96,9 +96,15 @@ def main(urls: List[str], dir_name: str) -> None:
 
 if __name__ == '__main__':
     main(urls=filter_urls, dir_name='Filter')
+    print('Filter Done!')
     main(urls=rewrite_urls, dir_name='Rewrite')
+    print('Rewrite Done!')
     main(urls=config_urls, dir_name='Config')
+    print('Config Done!')
     main(urls=task_urls, dir_name='Task')
+    print('Task Done!')
     main(urls=http_urls, dir_name='Http')
+    print('Http Done!')
     main(urls=parser_urls, dir_name='Parser')
+    print('Parser Done!')
     print('All Done!')
