@@ -40,7 +40,7 @@ rewrite_urls = [
     'https://whatshub.top/rewrite/nfc.conf',
     'https://whatshub.top/rewrite/adultraplus.conf',
     'https://raw.githubusercontent.com/thebestkyle323/Quantumult-x/main/WPSuperVIPuserCrack.js',
-    'https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/Bilibili.conf',
+    'https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/BilibiliAds.conf',
     'https://github.com/ddgksf2013/Rewrite/raw/master/UnlockVip/Spotify.conf',
     'https://github.com/ddgksf2013/dev/raw/master/ForOwnUse.conf',
     'https://github.com/ddgksf2013/Rewrite/raw/master/AdBlock/StartUp.conf',
