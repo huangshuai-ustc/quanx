@@ -63,7 +63,8 @@ rewrite_urls = [
     'https://raw.githubusercontent.com/chavyleung/scripts/master/box/rewrite/boxjs.rewrite.quanx.conf',
     'https://raw.githubusercontent.com/w37fhy/QuantumultX/master/QuantumultX_Cookie.conf']
 
-config_urls = ['https://github.com/ddgksf2013/Profile/raw/master/QuantumultX.conf']
+config_urls = ['https://github.com/ddgksf2013/Profile/raw/master/QuantumultX.conf', # 404
+               ]
 
 task_urls = ['https://raw.githubusercontent.com/deezertidal/private/main/rumors.js',
              'https://raw.githubusercontent.com/deezertidal/private/main/appsdoor.js',
@@ -98,8 +99,8 @@ if __name__ == '__main__':
     print('Filter Done!')
     main(urls=rewrite_urls, dir_name='Rewrite')
     print('Rewrite Done!')
-    main(urls=config_urls, dir_name='Config')
-    print('Config Done!')
+    # main(urls=config_urls, dir_name='Config')
+    # print('Config Done!')
     main(urls=task_urls, dir_name='Task')
     print('Task Done!')
     main(urls=http_urls, dir_name='Http')
