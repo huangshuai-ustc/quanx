@@ -61,7 +61,8 @@ rewrite_urls = [
     'https://raw.githubusercontent.com/Orz-3/QuantumultX/master/Netflix_ratings.conf',
     'https://raw.githubusercontent.com/id77/QuantumultX/master/rewrite/Youtube_CC.conf',
     'https://raw.githubusercontent.com/chavyleung/scripts/master/box/rewrite/boxjs.rewrite.quanx.conf',
-    'https://raw.githubusercontent.com/w37fhy/QuantumultX/master/QuantumultX_Cookie.conf']
+    'https://raw.githubusercontent.com/w37fhy/QuantumultX/master/QuantumultX_Cookie.conf',
+    'https://raw.githubusercontent.com/ddgksf2013/Rewrite/master/AdBlock/Applet.conf']
 
 config_urls = ['https://github.com/ddgksf2013/Profile/raw/master/QuantumultX.conf', # 404
                ]
